@@ -89,7 +89,7 @@ function load_files() {
 
 	mkdir -p PYscine_tester
 
-	if [ -f PYscine_tester/tester_launcher.sh ]; then
+	if ! [ -f ./PYscine_tester/tester_launcher.sh ]; then
 		mv tester_launcher.sh ./PYscine_tester/
 		ln -sf ./PYscine_tester/tester_launcher.sh tester_launcher.sh
 	fi
