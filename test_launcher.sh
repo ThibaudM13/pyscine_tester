@@ -82,27 +82,27 @@ function loading() {
 } 
 
 function load_files() {
-	base_url="https://gitlab.com/42-projects3/python/piscine_py_tester/-/raw/main"
+	base_url="https://gitlab.com/ThibaudM13/piscine_py_tester/-/raw/main"
 	req="$base_url/day0$chosen_day.req"
 	cfg="$base_url/day0$chosen_day.cfg"
 	tests="$base_url/day0$chosen_day.test"
 
 	if ! [ -f ./conftest.py ] || ((OPT_FORCE==1)); then
-		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$cfg" -O ./conftest.py -o /dev/null &
+		wget "$cfg" -O ./conftest.py -o /dev/null &
 		loading "$!" "Downloading config file" 
 	else
 		sleep 0.05
 		loading "$!" "Config file already here (use -f to force)"
 	fi
 	if ! [ -f ./tester_requirements.txt ] || ((OPT_FORCE==1)); then
-		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$req" -O ./tester_requirements.txt -o /dev/null &
+		wget "$req" -O ./tester_requirements.txt -o /dev/null &
 		loading "$!" "Downloading requirement file"
 	else
 		sleep 0.05
 		loading "$!" "Requirement file already here (use -f to force)"
 	fi
 	if ! [ -f "./ft_tester_day$chosen_day.py" ] || ((OPT_FORCE==1)); then
-		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$tests" -O "./ft_tester_day$chosen_day.py" -o /dev/null &
+		wget "$tests" -O "./ft_tester_day$chosen_day.py" -o /dev/null &
 		loading "$!" "Downloading test script"
 	else
 		sleep 0.05
