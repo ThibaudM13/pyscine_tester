@@ -87,22 +87,32 @@ function load_files() {
 	cfg="$base_url/day0$chosen_day.cfg"
 	tests="$base_url/day0$chosen_day.test"
 
-	if ! [ -f ./conftest.py ] || ((OPT_FORCE==1)); then
-		wget "$cfg" -O ./conftest.py -o /dev/null &
-		loading "$!" "Downloading config file" 
+	mkdir -p tester_PYscine
+
+	if [ -f tester_PYscine ]; then
+		mv tester_launcher.sh ./tester_PYscine/
+		ln -sf ./tester_PYscine/tester_launcher.sh tester_launcher.sh
+	fi
+
+	if ! [ -f ./tester_PYscine/conftest.py ] || ((OPT_FORCE==1)); then
+		wget "$cfg" -O ./tester_PYscine/conftest.py -o /dev/null &
+		loading "$!" "Downloading config file"
 	else
 		sleep 0.05
 		loading "$!" "Config file already here (use -f to force)"
 	fi
-	if ! [ -f ./tester_requirements.txt ] || ((OPT_FORCE==1)); then
-		wget "$req" -O ./tester_requirements.txt -o /dev/null &
+	ln -sf ./tester_PYscine/conftest.py ./conftest.py
+
+	if ! [ -f ./tester_PYscine/tester_requirements.txt ] || ((OPT_FORCE==1)); then
+		wget "$req" -O ./tester_PYscine/tester_requirements.txt -o /dev/null &
 		loading "$!" "Downloading requirement file"
 	else
 		sleep 0.05
 		loading "$!" "Requirement file already here (use -f to force)"
 	fi
-	if ! [ -f "./ft_tester_day$chosen_day.py" ] || ((OPT_FORCE==1)); then
-		wget "$tests" -O "./ft_tester_day$chosen_day.py" -o /dev/null &
+
+	if ! [ -f "./tester_PYscine/ft_tester_day$chosen_day.py" ] || ((OPT_FORCE==1)); then
+		wget "$tests" -O "./tester_PYscine/ft_tester_day$chosen_day.py" -o /dev/null &
 		loading "$!" "Downloading test script"
 	else
 		sleep 0.05
@@ -116,12 +126,12 @@ function delete_files() {
 	loading "$!" "Stopping tester"
 
 	if ((OPT_CACHE == 0)); then
-		rm -f ./conftest.py ./tester_requirements.txt "./ft_tester_day$chosen_day.py"
 		deactivate 2>/dev/null
 
-		rm -rf .venv_tester tester_launcher.sh &
+		rm -rf ./tester_PYscine tester_launcher.py
 		loading "$!" "Clearing directory."
 	fi
+	rm -f ./conftest.py
 	exit 0
 }
 
@@ -131,19 +141,19 @@ trap delete_files INT
 
 load_files
 
-if ! [ -d .venv_tester ]; then
-	python -m venv .venv_tester &
+if ! [ -d ./tester_PYscine/.venv_tester ]; then
+	python -m venv ./tester_PYscine/.venv_tester &
 	loading "$!" "Creating virtual environnement for tester"
 else
 	sleep 0.1
 	loading "$!" "Virtual Env already present"
 fi
 
-source ./.venv_tester/bin/activate
+source ./tester_PYscine/.venv_tester/bin/activate
 
-pip install -r ./tester_requirements.txt >/dev/null &
+pip install -r ./tester_PYscine/tester_requirements.txt >/dev/null &
 loading "$!" "Downloading dependencies"
 
-PYTHONPATH="$PWD:$PYTHONPATH" pytest -v -rP "./ft_tester_day$chosen_day.py"
+pytest -v -rP "./tester_PYscine/ft_tester_day$chosen_day.py"
 
 delete_files
