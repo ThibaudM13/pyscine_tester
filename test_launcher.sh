@@ -128,7 +128,8 @@ function delete_files() {
 	if ((OPT_CACHE == 0)); then
 		deactivate 2>/dev/null
 
-		rm -rf ./PYscine_tester tester_launcher.py
+		mv ./PYscine_tester ./to_delete
+		rm -rf ./to_delete tester_launcher.py
 		loading "$!" "Clearing directory."
 	fi
 	rm -f ./conftest.py
