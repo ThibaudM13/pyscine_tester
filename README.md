@@ -25,6 +25,7 @@ bash ./tester_launcher.sh
 
 ```bash
 rm -f conftest.py ft_tester_day*.py  tester_launcher.sh tester_requirements.txt
+rm -rf .venv_tester
 ```
 
 
