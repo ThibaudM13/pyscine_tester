@@ -92,7 +92,7 @@ function delete_files() {
 
 	rm -f ./conftest.py ./tester_requirements.txt "./ft_tester_day$chosen_day.py"
 	deactivate 2>/dev/null
-	rm -rf .venv_tester &
+	rm -rf .venv_tester .tester.sh &
 	loading "$!" "Clearing directory."
 
 	exit 0
