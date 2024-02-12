@@ -155,7 +155,8 @@ fi
 
 source ./PYscine_tester/.venv_tester/bin/activate
 
-pip install -r ./PYscine_tester/tester_requirements.txt -r ./requirements.txt >/dev/null &
+[ -f ./requirement.txt ] && pip install -r ./requirements.txt 2>&1 >/dev/null  &
+pip install -r ./PYscine_tester/tester_requirements.txt  2>&1 >/dev/null &
 loading "$!" "Downloading dependencies"
 
 pytest -v -rP "./PYscine_tester/ft_tester_day$chosen_day.py"
