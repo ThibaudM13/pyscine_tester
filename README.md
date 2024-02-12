@@ -4,13 +4,13 @@
 
 For a unique use (in correction for instance)
 ```bash
-wget http://tinyurl.com/PythonPoolTester -O tester_launcher.sh -q
+wget http://tinyurl.com/FtPythonPoolTester -O tester_launcher.sh -q
 bash ./tester_launcher.sh
 ```
 
 For multiple uses (won' t delete newly created/ downloaded files)
 ```bash
-wget http://tinyurl.com/PythonPoolTester -O tester_launcher.sh -q
+wget http://tinyurl.com/FtPythonPoolTester -O tester_launcher.sh -q
 bash ./tester_launcher.sh --allow-cache
 ```
 Then could launch as:
