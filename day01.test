@@ -1,0 +1,239 @@
+from ex00.give_bmi import give_bmi, apply_limit
+from ex01.array2D import slice_me
+from ex02.load_image import ft_load
+from PIL import Image
+from typing import List
+import ex00.give_bmi as exo0
+import ex01.array2D as exo1
+import ex02.load_image as exo2
+import ex03.load_image as exo3A
+import ex03.zoom as exo3B
+import ex04.load_image as exo4A
+import ex04.rotate as exo4B
+import ex05.load_image as exo5A
+import ex05.pimp_image as exo5B
+import inspect
+import numpy as np
+import pytest
+import random
+import random as rd
+import string
+import sys
+import warnings
+
+
+# ---- UTILS ----
+def doctrings(list_modules: list):
+    functions = []
+    for module in list_modules:
+        functions += inspect.getmembers(module,
+                                        predicate=inspect.isfunction)
+    for func in functions:
+        name, fct = func
+        doc = fct.__doc__
+        if name == 'main':
+            continue
+        assert doc is not None, f"No documentation for {name}(...)"
+
+
+def getStrError(e: Exception) -> str:
+    """
+    Method to get the error output required by the subject.
+    """
+    return f"{type(e).__name__}: {str(e)}"
+
+
+def ft_warn(received: str, msg: str = None):
+    b = '\033[1m'
+    y = '\033[33m'
+    r = '\033[m'
+    warn_msg = ""
+    warn_msg = f"\n{b}Not Same output as expected\n"\
+               f"{r}{y}Received:{r}\n"\
+               f"\t{received}\n"\
+               f"{y}{msg}\n"
+    if warn_msg:
+        warnings.warn(y + warn_msg + r)
+
+
+# -------------------
+# -----   EX00  -----
+# -------------------
+def test_doc_ex00():
+    doctrings([exo0])
+
+
+tests_bmi = {
+    'simple': (True, ([2.71, 1.15], [165.3, 38.4]),
+               [22.507863455018317, 29.0359168241966]),
+    'one': (True, ([1], [38.0042]), [38.0042]),
+    'empty': (True, ([], []), []),
+    'Different length': (False, ([2.71], [165.3, 38.4]), []),
+    'Str in List': (False, ([1, 16.3, 38.4, 43, 'lali', 2.71],
+                            [3, 32, 53.0, "lalo"]), []),
+    'Dict in List': (False, ([1, 165.3, {}, 43, 2.71],
+                             [38, 32, 534.0, 5, 1]), []),
+    'string param type': (False, ([], "This, isn't a list"), []),
+    'Set as param': (False, ([43.4, 21.3], {42, 84.421}), []),
+}
+
+
+@pytest.mark.parametrize("isSuccess, params, expected",
+                         tests_bmi.values(),
+                         ids=tests_bmi.keys())
+def test_ok_bmi_ex00(isSuccess: bool, params: tuple, expected) -> bool:
+    height, width = params
+    try:
+        ret = give_bmi(height, width)
+        assert ret == expected
+
+    except Exception as e:
+        assert not isSuccess, 'Exception catched with correct params.'
+        print(getStrError(e), file=sys.stderr)
+
+
+tests_apply = {
+    'random': (True, ([random.uniform(0.0, 40.0) for _ in range(10)], 30)),
+    'empty': (True, ([], 4242)),
+    'max_lim': (True, ([43, 2, 4, 39, 9, 3243], 424242)),
+    'Float limit': (False, ([random.uniform(0.0, 40.0) for _ in range(10)],
+                            30.0)),
+    'Str in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30)),
+    'Diff types in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30.0)),
+    'Dict param': (False, ({32: 43, 09.4: 'Falafel'}, 30.0))
+}
+
+@pytest.mark.parametrize("isSuccess, params",
+                         tests_apply.values(),
+                         ids=tests_apply.keys())
+def test_apply_ex00(isSuccess: bool, params: tuple) -> bool:
+    bmi_list, limit = params
+    try:
+        ret = apply_limit(bmi_list, limit)
+        expected = [elem >= limit for elem in bmi_list]
+        if not isSuccess and ret != expected:
+            ft_warn(str(ret), "An error occured list, must be empty")
+        else:
+            assert ret == expected
+
+    except Exception:
+        assert not isSuccess, 'Exception catched with correct params.'
+        # print(getStrError(e), file=sys.stderr)
+
+
+# -------------------
+# -----   EX01  -----
+# -------------------
+def test_doc_ex01():
+    doctrings([exo1])
+
+
+fam = [[1, 4], [2, 5], [3, 6]]
+
+ft_tests = {
+    'ok': (True, (fam, 0, 2)),
+    'end bef start': (False, (fam, 2, -2)),
+    '-idx OutRange': (False, (fam, 0, -4)),
+    '+idx OutRange': (False, (fam, 4, -3)),
+    'Float param': (False, (fam, 2.0, 3)),
+    'Str param': (False, (fam, 2, '3'))
+}
+fam = {1: 4, 2: 5, 3: 6}
+ft_tests['Wrong famType'] = (False, (fam, 0, 1))
+
+fam = [[1, 4], [2], [3, 6]]
+ft_tests['Wrong famShape'] = (False, (fam, 0, 1))
+
+
+@pytest.mark.parametrize("isSuccess, params",
+                         ft_tests.values(),
+                         ids=ft_tests.keys())
+def test_ex01(capsys, isSuccess: bool, params: list):
+    family, start, end = params
+    ret = None
+    out, err = ('', '')
+    try:
+        ret = slice_me(family, start, end)
+        out, err = capsys.readouterr()
+        if not isSuccess and ret:
+            pytest.fail(msg='returns differs from expected ret')
+    except Exception as e:
+        assert not isSuccess, 'Exception caught with correct params.'
+        print(getStrError(e), file=sys.stderr)
+    if isSuccess:
+        expected = family[start:end]
+        assert ret == expected, "Return wrong list"
+        shape_fam = [len(family), len(family[0])]
+        shape_exp = [len(expected), len(expected[0])]
+        assert out == generate_str(shape_fam, shape_exp), "Bad output"
+
+def generate_str(shape: List[int], new_shape: List[int]) -> str:
+    res_str = f'My shape is : ({shape[0]}, {shape[1]})\n'
+    res_str += f'My new shape is : ({new_shape[0]}, {new_shape[1]})\n'
+    return res_str
+
+
+# -------------------
+# -----   EX02  -----
+# -------------------
+def test_doc_ex02():
+    doctrings([exo2])
+
+def generate_img():
+    tmp = np.random.rand(100, 100, 3)
+    tmp = (255 * tmp).astype(np.uint8)
+    rd_str = ''.join(rd.choice(string.ascii_letters) for i in range(5))
+    img_path = '/tmp/img_' + rd_str + '.jpg'
+    im = Image.fromarray(tmp)
+    im.save(img_path)
+    arr = Image.open(img_path)
+    arr = np.asarray(arr)
+    return (img_path, arr)
+
+
+path, arr = generate_img()
+ft_tests = {
+    'ok': (True, path, arr),
+    'Dir': (False, './', None),
+    'File': (False, './ex02/load_image.py', None),
+    'Empty': (False, '', None),
+    'Spaces': (False, '\t  ', None)
+}
+
+
+@pytest.mark.parametrize("isSuccess, path, img_arr",
+                         ft_tests.values(),
+                         ids=ft_tests.keys())
+def test_ex02(capsys, isSuccess: bool, path: str, img_arr: np.ndarray):
+    if isSuccess:
+        arr = ft_load(path)
+        assert (arr == img_arr).all()
+        out, err = capsys.readouterr()
+        assert out == f"The shape of image is: {img_arr.shape}\n"
+    else:
+        try:
+            assert ft_load(path) in [None, [], np.ndarray((0))], \
+                'What did you returned? Seriously'
+        except Exception as e:
+            ft_warn(getStrError(e))
+
+
+# -------------------
+# -----   EX03  -----
+# -------------------
+def test_doc_ex03():
+    doctrings([exo3A, exo3B])
+
+
+# -------------------
+# -----   EX04  -----
+# -------------------
+def test_doc_ex04():
+    doctrings([exo4A, exo4B])
+
+
+# -------------------
+# -----   EX05  -----
+# -------------------
+def test_doc_ex05():
+    doctrings([exo5A, exo5B])
