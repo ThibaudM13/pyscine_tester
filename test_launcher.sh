@@ -1,5 +1,15 @@
 #!/bin/bash
 
+OPT_CACHE=0
+OPT_FORCE=0
+for arg in "$@"; do
+	if [ "$arg" == "-c" ] || [ "$arg" == "--allow-cache" ]; then
+		OPT_CACHE=1
+	elif [ "$arg" == "-f" ] || [ "$arg" == "--force" ]; then
+		OPT_FORCE=1
+	fi
+done
+
 declare -A days
 
 days[00]=Starting
@@ -77,12 +87,27 @@ function load_files() {
 	cfg="$base_url/day0$chosen_day.cfg"
 	tests="$base_url/day0$chosen_day.test"
 
-	wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$cfg" -O ./conftest.py -o /dev/null &
-	loading "$!" "Downloading config file" 
-	wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$req" -O ./tester_requirements.txt -o /dev/null &
-	loading "$!" "Downloading requirement file" 
-	wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$tests" -O "./ft_tester_day$chosen_day.py" -o /dev/null &
-	loading "$!" "Downloading test script" 
+	if ! [ -f ./conftest.py ] || ((OPT_FORCE==1)); then
+		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$cfg" -O ./conftest.py -o /dev/null &
+		loading "$!" "Downloading config file" 
+	else
+		sleep 0.05
+		loading "$!" "Config file already here (use -f to force)"
+	fi
+	if ! [ -f ./tester_requirements.txt ] || ((OPT_FORCE==1)); then
+		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$req" -O ./tester_requirements.txt -o /dev/null &
+		loading "$!" "Downloading requirement file"
+	else
+		sleep 0.05
+		loading "$!" "Requirement file already here (use -f to force)"
+	fi
+	if ! [ -f "./ft_tester_day$chosen_day.py" ] || ((OPT_FORCE==1)); then
+		wget --header="Cookie: _gitlab_session=$GITLAB_SESSION" "$tests" -O "./ft_tester_day$chosen_day.py" -o /dev/null &
+		loading "$!" "Downloading test script"
+	else
+		sleep 0.05
+		loading "$!" "Test script already here (use -f to force)"
+	fi
 }
 
 function delete_files() {
@@ -90,11 +115,13 @@ function delete_files() {
 	kill $(jobs -p)  2>/dev/null &
 	loading "$!" "Stopping tester"
 
-	rm -f ./conftest.py ./tester_requirements.txt "./ft_tester_day$chosen_day.py"
-	deactivate 2>/dev/null
-	rm -rf .venv_tester .tester.sh &
-	loading "$!" "Clearing directory."
+	if ((OPT_CACHE == 0)); then
+		rm -f ./conftest.py ./tester_requirements.txt "./ft_tester_day$chosen_day.py"
+		deactivate 2>/dev/null
 
+		rm -rf .venv_tester tester_launcher.sh &
+		loading "$!" "Clearing directory."
+	fi
 	exit 0
 }
 
@@ -104,8 +131,13 @@ trap delete_files INT
 
 load_files
 
-python -m venv .venv_tester &
-loading "$!" "Creating virtual environnement for tester"
+if ! [ -d .venv_tester ]; then
+	python -m venv .venv_tester &
+	loading "$!" "Creating virtual environnement for tester"
+else
+	sleep 0.1
+	loading "$!" "Virtual Env already present"
+fi
 
 source ./.venv_tester/bin/activate
 
