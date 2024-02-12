@@ -23,8 +23,9 @@ To erase files, launch program
 bash ./tester_launcher.sh
 ```
 
+Or delete manually the files
 ```bash
-rm -rf tester_launcher.sh PYscine_tester ./conftest.py
+rm -rf ./tester_launcher.sh PYscine_tester ./conftest.py
 ```
 
 
