@@ -1,4 +1,5 @@
 #!/bin/bash
+alias python=python3
 
 OPT_CACHE=0
 OPT_FORCE=0
@@ -125,15 +126,17 @@ function delete_files() {
 	kill $(jobs -p)  2>/dev/null &
 	loading "$!" "Stopping tester"
 
+	rm -f ./conftest.py
 	if ((OPT_CACHE == 0)); then
 		deactivate 2>/dev/null
 
-		mv ./PYscine_tester ./to_delete
-		rm -rf ./to_delete tester_launcher.py
+		rm -rf ./PYscine_tester 2>/dev/null &
 		loading "$!" "Clearing directory."
+
+		exec rm -rf ./PYscine_tester ./tester_launcher.sh
+	else
+		exit 0
 	fi
-	rm -f ./conftest.py
-	exit 0
 }
 
 get_user_choice
@@ -152,7 +155,7 @@ fi
 
 source ./PYscine_tester/.venv_tester/bin/activate
 
-pip install -r ./PYscine_tester/tester_requirements.txt >/dev/null &
+pip install -r ./PYscine_tester/tester_requirements.txt -r ./requirements.txt >/dev/null &
 loading "$!" "Downloading dependencies"
 
 pytest -v -rP "./PYscine_tester/ft_tester_day$chosen_day.py"
