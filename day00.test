@@ -1,0 +1,384 @@
+from ex02.find_ft_type import all_thing_is_obj
+from ex03.NULL_not_found import NULL_not_found
+from ex06.ft_filter import ft_filter
+from typing import List
+import ex05 as exo5
+import ex06.filterstring as exo6A
+import ex06.ft_filter as exo6B
+import ex07.sos as exo7
+import ex08.Loading as exo8
+import inspect
+import pytest
+import subprocess as sp
+import warnings
+
+
+# ---- UTILS ----
+def doctrings(list_modules: list):
+    functions = []
+    for module in list_modules:
+        functions += inspect.getmembers(module,
+                                        predicate=inspect.isfunction)
+    for func in functions:
+        name, fct = func
+        doc = fct.__doc__
+        if name == 'main':
+            continue
+        assert doc is not None, f"No documentation for {name}(...)"
+
+
+def ft_warn(received: str, expected: str = None):
+    b = '\033[1m'
+    y = '\033[33m'
+    r = '\033[m'
+    warn_msg = ""
+    if expected and received != expected:
+        warn_msg = f"\n{b}Not Same output as expected\n"\
+                   f"{r}{y}Received:{r}\n\t{received}{y}Subject:{r}\n\t"\
+                   "AssertionError: the arguments are bad\n"
+    elif not expected and received.startswith("AssertionError: "):
+        warn_msg = "\nErrors should be written in stderr."
+    if warn_msg:
+        warnings.warn(y + warn_msg + r)
+
+# -------------------
+# -----   EX00  -----
+# -------------------
+
+def utils_unit_ex00(isSuccess: bool, expected='') -> bool:
+    av = ["python3", "ex00/Hello.py"]
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+    assert err == ""
+    assert out == expected
+
+
+def test_ex00():
+    utils_unit_ex00(True, "['Hello', 'World!']\n"
+                          "('Hello', 'France!')\n"
+                          "{'Hello', 'Angouleme!'}\n"
+                          "{'Hello': '42Angouleme!'}\n")
+
+
+# -------------------
+# -----   EX01  -----
+# -------------------
+
+ft_tests = {
+    'String 1': ("Brian", "Brian is in the kitchen : <class 'str'>\n"),
+    'String 2': ("Joy", "Joy is in the kitchen : <class 'str'>\n"),
+    'List': (["Hello", "tata!"], "List : <class 'list'>\n"),
+    'Tuple': (("Hello", "toto!"), "Tuple : <class 'tuple'>\n"),
+    'Set': ({"Hello", "tutu!"}, "Set : <class 'set'>\n"),
+    'Dict': ({"Hello": "titi!"}, "Dict : <class 'dict'>\n"),
+    'Int': (4242, "Type not found\n"),
+    'Float': (42.42, "Type not found\n"),
+    'Fucntion ptr': (sorted, "Type not found\n")
+}
+
+
+@pytest.mark.parametrize("o, expected",
+                         ft_tests.values(),
+                         ids=ft_tests.keys())
+def test_ex01(capfd, o: any, expected: str) -> bool:
+    assert all_thing_is_obj(o) == 42
+    out, err = capfd.readouterr()
+    assert out == expected
+
+
+# -------------------
+# -----   EX02  -----
+# -------------------
+
+ft_tests = {
+    'None': (None, "Nothing: None <class 'NoneType'>\n", True),
+    'NaN': (float("NaN"), "Cheese: nan <class 'float'>\n", True),
+    'Zero': (0, "Zero: 0 <class 'int'>\n", True),
+    'Zerof': (0.0, "Zero: 0.0 <class 'float'>\n", True),
+    'Empty str': ("", "Empty: <class 'str'>\n", True),
+    'False': (False, "Fake: False <class 'bool'>\n", True),
+    'Non empty str': ("Brian", "Type not Found\n", False),
+    'Small float': (0.0005, "Type not Found\n", False),
+    'Function pointer': (max, "Type not Found\n", False),
+    'empty List': ([], "Type not Found\n", False)
+}
+
+
+@pytest.mark.parametrize("o, expected, isNull",
+                         ft_tests.values(),
+                         ids=ft_tests.keys())
+def test_ex02(capfd, o: any, expected: str, isNull: bool) -> bool:
+    assert NULL_not_found(o) == int(not isNull)
+    out, err = capfd.readouterr()
+    assert out == expected
+
+
+# -------------------
+# -----   EX03  -----
+# -------------------
+
+ft_tests_ok = {
+    '14': (["14"], "I'm Even.\n"),
+    '0': (["0"], "I'm Even.\n"),
+    '-5': (["-5"], "I'm Odd.\n"),
+    'Empty av': ([], "")
+}
+
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_ok.values(),
+                         ids=ft_tests_ok.keys())
+def test_ok_ex03(capsys, av: List[str], expected) -> bool:
+    av = ["python3", "ex04/whatis.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    assert err == ""
+    assert out == expected
+
+
+ft_tests_error = {
+    'Multiple av': (["-5", "0"],
+                    "AssertionError: more than one argument is provided\n"),
+    'Non number': (["Hi!"],
+                   "AssertionError: argument is not an integer\n"),
+    'Multiple minus': (["--5"],
+                       "AssertionError: argument is not an integer\n"),
+    'not number': (["7a"],
+                   "AssertionError: argument is not an integer\n"),
+}
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_error.values(),
+                         ids=ft_tests_error.keys())
+def test_error_ex03(capsys, av: List[str], expected) -> bool:
+    av = ["python3", "ex04/whatis.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    if out == '':
+        assert err != ''
+        ft_warn(err, expected)
+    else:
+        ft_warn(out)
+
+
+# -------------------
+# -----   EX04  -----
+# -------------------
+
+def get_str(arr_vals: List[int]) -> str:
+    s = f"The text contains {arr_vals[0]} characters:\n"
+    s += f"{arr_vals[1]} upper letters\n"
+    s += f"{arr_vals[2]} lower letters\n"
+    s += f"{arr_vals[3]} punctuation marks\n"
+    s += f"{arr_vals[4]} spaces\n"
+    s += f"{arr_vals[5]} digits\n"
+    return s
+
+
+ft_tests_ok = {
+    'Simple': (["Hello World!\n"],
+               get_str([13, 2, 8, 1, 2, 0])),
+    'BigStr': (["Python 4.0, released in 2008, was a major revision that is "
+                "not completely backward-compatible with earlier versions. "
+                "Python 2 was discontinued with version 2.7.18 in 2020."],
+               get_str([171, 2, 121, 8, 25, 15])),
+    'Empty str': ([""],
+                  get_str([0, 0, 0, 0, 0, 0])),
+    'Div str': (["0123456789 AbCdEfGhIjKlMnOpQrStUvWxYz \t\t.?\n"],
+                get_str([43, 13, 13, 2, 5, 10]))
+}
+
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_ok.values(),
+                         ids=ft_tests_ok.keys())
+def test_ok_ex04(capsys, av: List[str], expected) -> bool:
+    av = ["python3", "ex05/building.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    assert err == ""
+    assert out == expected
+
+
+ft_tests_error = {
+    'Multiple av': (["Multiple", "Args"],
+                    get_str([0, 0, 0, 0, 0, 0])),
+}
+
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_error.values(),
+                         ids=ft_tests_error.keys())
+def test_error_ex04(capsys, av: List[str], expected) -> bool:
+    av = ["python3", "ex05/building.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    if out == '':
+        assert err != ''
+    else:
+        ft_warn(out)
+
+
+# -------------------
+# -----   EX05  -----
+# -------------------
+
+def test_doc_ex05():
+    doctrings([exo5])
+
+
+# -------------------
+# -----   EX06  -----
+# -------------------
+def test_doc_ex06():
+    doctrings([exo6A, exo6B])
+
+
+# Testing: Filter method
+
+li = [0, 0.004, 1, 4, False, True, "Hello", "", '\033[33m', None]
+
+ft_tests_filter_ok = {
+    'Fct=isNone': (lambda a: a is None, li),
+    'Fct=nota': (lambda a: not a, li),
+    'Fct=None': (None, li),
+    'Fct=str': (lambda a: a == 'Imposssible', li),
+}
+
+
+@pytest.mark.parametrize("func, seq",
+                         ft_tests_filter_ok.values(),
+                         ids=ft_tests_filter_ok.keys())
+def test_filter(func, seq):
+    assert list(filter(func, seq)) == list(ft_filter(func, seq))
+
+
+def test_filter_doc():
+    assert ft_filter.__doc__.split() == filter.__doc__.split()
+
+
+# Test Program
+
+ft_tests_ok = {
+    'Test1': (["Hello the World", "4"],
+              "['Hello', 'World']\n"),
+    'Test2': (["Hello the World", "6"], "[]\n"),
+    'Test3': (["012 0123 012345 012 0123456789 01 0", "4"],
+              "['0123', '012345', '0123456789']\n"),
+    'Test4': (["\t\t\nTest\v\rMultiple errmmmmm\t \nSpaces", "8"],
+              "['Multiple', 'errmmmmm']\n")
+}
+
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_ok.values(),
+                         ids=ft_tests_ok.keys())
+def test_ok_ex06(capsys, av, expected) -> bool:
+    av = ["python3", "ex06/filterstring.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    assert err == ""
+    assert out == expected
+
+
+ft_tests_error = {
+    'Bad av': (["Several", "Args"]),
+    'empty num': (["Several", ""]),
+    'space num': (["Several", "-   "]),
+    'float number': (["Several", "5.56"]),
+    'No av': ([])
+}
+
+
+@pytest.mark.parametrize("av",
+                         ft_tests_error.values(),
+                         ids=ft_tests_error.keys())
+def test_error_ex06(capsys, av) -> bool:
+    av = ["python3", "ex06/filterstring.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    if out == '':
+        assert err != ''
+        ft_warn(err, "AssertionError: the arguments are bad\n")
+    else:
+        ft_warn(out)
+
+
+# -------------------
+# -----   EX07  -----
+# -------------------
+
+def test_doc_ex07():
+    doctrings([exo7])
+
+
+# Test Program
+
+ft_tests_ok = {
+    'sos': (["sos"], "... --- ...\n"),
+    'sOs': (["sOs"], "... --- ...\n"),
+    'SoS': (["SoS"], "... --- ...\n"),
+    'Sentance': (["This is a test"],
+                 "- .... .. ... / .. ... / .- / - . ... -\n"),
+    'alphanum': (["MAX CHAR 256"],
+                 "-- .- -..- / -.-. .... .- .-. / ..--- ..... -....\n")
+}
+
+
+@pytest.mark.parametrize("av, expected",
+                         ft_tests_ok.values(),
+                         ids=ft_tests_ok.keys())
+def test_ok_ex07(capsys, av, expected) -> bool:
+    av = ["python3", "./ex07/sos.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    assert err == ""
+    assert out == expected
+
+
+ft_tests_error = {
+    'No av': ([]),
+    'Bad ac': (["Several", "Args"]),
+    'mail': (["mail@42.fr"]),
+    'space char': (["\test"]),
+    'new line': (["\n"]),
+}
+
+
+@pytest.mark.parametrize("av",
+                         ft_tests_error.values(),
+                         ids=ft_tests_error.keys())
+def test_error_ex07(capsys, av) -> bool:
+    av = ["python3", "./ex07/sos.py"] + av
+    process = sp.run(av, capture_output=True)
+    out = process.stdout.decode()
+    err = process.stderr.decode()
+
+    if out == '':
+        assert err != ''
+        ft_warn(err, "AssertionError: the arguments are bad\n")
+    else:
+        ft_warn(out)
+
+
+# -------------------
+# -----   EX08  -----
+# -------------------
+
+def test_docstrings():
+    doctrings([exo8])
