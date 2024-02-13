@@ -1,5 +1,4 @@
 #!/bin/bash
-alias python=python3
 
 OPT_CACHE=0
 OPT_FORCE=0
@@ -21,7 +20,7 @@ days_available="${!days[@]}"
 chosen_day=0
 function get_user_choice() {
 	printf "\033[H\033[2J"
-	printf "\033[1;96m ###   Python Piscine Tester   ###\n\n\033[m"
+	printf "\033[1;96m ###   python3 Piscine Tester   ###\n\n\033[m"
 
 	printf "\033[1m Days available are:\033[m\n"
 	for key in $days_available; do
@@ -146,12 +145,14 @@ trap delete_files INT
 load_files
 
 if ! [ -d ./PYscine_tester/.venv_tester ]; then
-	python -m venv ./PYscine_tester/.venv_tester &
+	python3 -m venv ./PYscine_tester/.venv_tester &
 	loading "$!" "Creating virtual environnement for tester"
 else
 	sleep 0.1
 	loading "$!" "Virtual Env already present"
 fi
+
+! [ -d ./PYscine_tester/.venv_tester ] && echo "Virtual env inexistant" && kill -INT $$
 
 source ./PYscine_tester/.venv_tester/bin/activate
 
