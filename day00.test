@@ -41,10 +41,10 @@ def ft_warn(received: str, expected: str = None):
     if warn_msg:
         warnings.warn(y + warn_msg + r)
 
+
 # -------------------
 # -----   EX00  -----
 # -------------------
-
 def utils_unit_ex00(isSuccess: bool, expected='') -> bool:
     av = ["python3", "ex00/Hello.py"]
     process = sp.run(av, capture_output=True)
@@ -150,6 +150,7 @@ ft_tests_error = {
                    "AssertionError: argument is not an integer\n"),
 }
 
+
 @pytest.mark.parametrize("av, expected",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
@@ -169,10 +170,9 @@ def test_ex04_error(capsys, av: List[str], expected) -> bool:
 # -------------------
 # -----   EX05  -----
 # -------------------
-
-
 def test_ex05_doc():
     doctrings([exo5])
+
 
 def get_str(arr_vals: List[int]) -> str:
     s = f"The text contains {arr_vals[0]} characters:\n"
