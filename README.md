@@ -1,34 +1,38 @@
-## Python Pool Tester
+# Python Pool Tester
 
-### Download/ Install
+### Quick Start
 
-For a unique use (in correction for instance)
+#### Single Use
+For a one-time use, such as in a correction scenario, run the following command:
+
 ```bash
-wget http://tinyurl.com/FtPythonPoolTester -O tester_launcher.sh -q
-bash ./tester_launcher.sh
+bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)"
 ```
 
-For multiple uses (won' t delete newly created/ downloaded files)
+#### Multiple Uses
+For repeated use without deleting newly created or downloaded files, execute the following command:
+
 ```bash
-wget http://tinyurl.com/FtPythonPoolTester -O tester_launcher.sh -q
-bash ./tester_launcher.sh --allow-cache
-```
-Then could launch as:
-```bash
-bash ./tester_launcher.sh --allow-cache
+bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)" _ --allow-cache
 ```
 
-To erase files, launch program
+#### Cleanup
+To remove all files associated with the tester, simply run the program again:
+
 ```bash
-bash ./tester_launcher.sh
+bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)"
 ```
 
-Or delete manually the files
+Alternatively, you can manually delete the files with the following command:
+
 ```bash
-rm -rf ./tester_launcher.sh PYscine_tester ./conftest.py
+rm -rf PYscine_tester ./conftest.py
 ```
 
+### Security Notice
 
-### Contribute
+**Important:** Always verify the source of scripts obtained from URL shorteners. For transparency, here is the final destination of the script URL: [Direct Script URL](http://preview.tinyurl.com/FtPythonPoolTester)
 
-Do not hesitate to suggest tests, or any improvements on tests already created.
+### Getting Involved
+
+We welcome contributions! Feel free to propose new tests or enhancements to existing ones. Your input is valuable in improving the Python Pool Tester.
