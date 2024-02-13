@@ -171,7 +171,7 @@ delete_files() {
 
 		# Asynchronously remove the PYscine_tester directory
 		rm -rf ./PYscine_tester &>/dev/null &
-		loading "$!" "Clearing directory."
+		loading "$!" "Cleaning directory."
 
 		# Synchronously remove the PYscine_tester directory and tester_launcher.sh
 		exec rm -rf ./PYscine_tester
