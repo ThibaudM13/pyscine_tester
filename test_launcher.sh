@@ -38,9 +38,6 @@ function check_dependencies() {
 chosen_day=0
 function get_user_choice() {
 	printf "\033[H\033[2J"
-<<<<<<< HEAD
-	printf "\033[1;96m ###   python3 Piscine Tester   ###\n\n\033[m"
-=======
 	printf "\033[1;92m
   ┌──────────────────────────────────────────────────────────────┐
   │  ╔═╗┬ ┬┌┬┐┬ ┬┌─┐┌┐┌  ╔═╗┬┌─┐┌─┐┬ ┌┐┌┌─┐  ╔╦╗┌─┐┌─┐┌┬┐┌─┐┬─┐  │
@@ -48,7 +45,6 @@ function get_user_choice() {
   │  ╩   ┴  ┴ ┴ ┴└─┘┘└┘  ╩  ┴└─┘└─┘┴ ┘└┘└─┘   ╩ └─┘└─┘ ┴ └─┘┴└─  │
   └──────────────────────────────────────────────────────────────┘
 \n\033[m"
->>>>>>> 63eabab (Update launcher)
 
 	printf "\033[1m Days available are:\033[m\n"
 	for key in $days_available; do
