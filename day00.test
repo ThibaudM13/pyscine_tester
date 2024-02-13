@@ -62,7 +62,7 @@ def test_ex00():
 
 
 # -------------------
-# -----   EX01  -----
+# -----   EX02  -----
 # -------------------
 
 ft_tests = {
@@ -81,14 +81,14 @@ ft_tests = {
 @pytest.mark.parametrize("o, expected",
                          ft_tests.values(),
                          ids=ft_tests.keys())
-def test_ex01(capfd, o: any, expected: str) -> bool:
+def test_ex02(capfd, o: any, expected: str) -> bool:
     assert all_thing_is_obj(o) == 42
     out, err = capfd.readouterr()
     assert out == expected
 
 
 # -------------------
-# -----   EX02  -----
+# -----   EX03  -----
 # -------------------
 
 ft_tests = {
@@ -108,14 +108,14 @@ ft_tests = {
 @pytest.mark.parametrize("o, expected, isNull",
                          ft_tests.values(),
                          ids=ft_tests.keys())
-def test_ex02(capfd, o: any, expected: str, isNull: bool) -> bool:
+def test_ex03(capfd, o: any, expected: str, isNull: bool) -> bool:
     assert NULL_not_found(o) == int(not isNull)
     out, err = capfd.readouterr()
     assert out == expected
 
 
 # -------------------
-# -----   EX03  -----
+# -----   EX04  -----
 # -------------------
 
 ft_tests_ok = {
@@ -129,7 +129,7 @@ ft_tests_ok = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
-def test_ok_ex03(capsys, av: List[str], expected) -> bool:
+def test_ex04_ok(capsys, av: List[str], expected) -> bool:
     av = ["python3", "ex04/whatis.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -153,7 +153,7 @@ ft_tests_error = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
-def test_error_ex03(capsys, av: List[str], expected) -> bool:
+def test_ex04_error(capsys, av: List[str], expected) -> bool:
     av = ["python3", "ex04/whatis.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -167,8 +167,12 @@ def test_error_ex03(capsys, av: List[str], expected) -> bool:
 
 
 # -------------------
-# -----   EX04  -----
+# -----   EX05  -----
 # -------------------
+
+
+def test_ex05_doc():
+    doctrings([exo5])
 
 def get_str(arr_vals: List[int]) -> str:
     s = f"The text contains {arr_vals[0]} characters:\n"
@@ -197,7 +201,7 @@ ft_tests_ok = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
-def test_ok_ex04(capsys, av: List[str], expected) -> bool:
+def test_ex05_ok(capsys, av: List[str], expected) -> bool:
     av = ["python3", "ex05/building.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -216,7 +220,7 @@ ft_tests_error = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
-def test_error_ex04(capsys, av: List[str], expected) -> bool:
+def test_ex05_error(capsys, av: List[str], expected) -> bool:
     av = ["python3", "ex05/building.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -229,17 +233,9 @@ def test_error_ex04(capsys, av: List[str], expected) -> bool:
 
 
 # -------------------
-# -----   EX05  -----
-# -------------------
-
-def test_doc_ex05():
-    doctrings([exo5])
-
-
-# -------------------
 # -----   EX06  -----
 # -------------------
-def test_doc_ex06():
+def test_ex06_doc():
     doctrings([exo6A, exo6B])
 
 
@@ -258,11 +254,11 @@ ft_tests_filter_ok = {
 @pytest.mark.parametrize("func, seq",
                          ft_tests_filter_ok.values(),
                          ids=ft_tests_filter_ok.keys())
-def test_filter(func, seq):
+def test_ex06_filter(func, seq):
     assert list(filter(func, seq)) == list(ft_filter(func, seq))
 
 
-def test_filter_doc():
+def test_ex06_filter_doc():
     assert ft_filter.__doc__.split() == filter.__doc__.split()
 
 
@@ -282,7 +278,7 @@ ft_tests_ok = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
-def test_ok_ex06(capsys, av, expected) -> bool:
+def test_ex06_ok(capsys, av, expected) -> bool:
     av = ["python3", "ex06/filterstring.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -304,7 +300,7 @@ ft_tests_error = {
 @pytest.mark.parametrize("av",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
-def test_error_ex06(capsys, av) -> bool:
+def test_ex06_error(capsys, av) -> bool:
     av = ["python3", "ex06/filterstring.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -321,7 +317,7 @@ def test_error_ex06(capsys, av) -> bool:
 # -----   EX07  -----
 # -------------------
 
-def test_doc_ex07():
+def test_ex07_doc():
     doctrings([exo7])
 
 
@@ -341,7 +337,7 @@ ft_tests_ok = {
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
-def test_ok_ex07(capsys, av, expected) -> bool:
+def test_ex07_ok(capsys, av, expected) -> bool:
     av = ["python3", "./ex07/sos.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -363,7 +359,7 @@ ft_tests_error = {
 @pytest.mark.parametrize("av",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
-def test_error_ex07(capsys, av) -> bool:
+def test_ex07_error(capsys, av) -> bool:
     av = ["python3", "./ex07/sos.py"] + av
     process = sp.run(av, capture_output=True)
     out = process.stdout.decode()
@@ -380,5 +376,5 @@ def test_error_ex07(capsys, av) -> bool:
 # -----   EX08  -----
 # -------------------
 
-def test_docstrings():
+def test_ex08_doc():
     doctrings([exo8])
