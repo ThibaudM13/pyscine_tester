@@ -34,6 +34,15 @@ main() {
 
 	pytest -v -rP "./PYscine_tester/ft_tester_day$chosen_day.py"
 
+	norm=`flake8 --exclude __init__.py ex0*`
+	loading "$!" "Checking Norm"
+
+	if [[ -z "$norm" ]]; then
+		printf "Flake8 Norm \t\033[92;1mSUCCESS\033[m\n"
+	else
+		printf "Flake8 Norm \t\033[91;1mFAILED\033[0;91m\n$norm\033[m\n"
+	fi
+
 	delete_files
 }
 
@@ -174,7 +183,7 @@ delete_files() {
 		loading "$!" "Cleaning directory."
 
 		# Synchronously remove the PYscine_tester directory and tester_launcher.sh
-		exec rm -rf ./PYscine_tester
+		exec rm -rf ./PYscine_tester ./tester_launcher.sh 2>&1 >/dev/null
 	else
         # If caching is allowed, simply exit without cleanup
 		exit 0
