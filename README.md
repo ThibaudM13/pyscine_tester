@@ -6,21 +6,21 @@
 For a one-time use, such as in a correction scenario, run the following command:
 
 ```bash
-bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)"
+bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)"
 ```
 
 #### Multiple Uses
 For repeated use without deleting newly created or downloaded files, execute the following command:
 
 ```bash
-bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)" _ --allow-cache
+bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)" _ --allow-cache
 ```
 
 #### Cleanup
 To remove all files associated with the tester, simply run the program again:
 
 ```bash
-bash -c "$(wget http://tinyurl.com/FtPythonPoolTester -O - -q)"
+bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)"
 ```
 
 Alternatively, you can manually delete the files with the following command:
