@@ -32,9 +32,9 @@ main() {
 	load_files
 	create_env
 
-	pytest -v -rP "./PYscine_tester/ft_tester_day$chosen_day.py"
+	pytest -v -rP "./PYscine_tester/ft_tester_day$chosen_day.py" 
 
-	norm=`flake8 --exclude __init__.py ex0*`
+	norm=`flake8 --exclude __init__.py,tester.py ex0*`
 	loading "$!" "Checking Norm"
 
 	if [[ -z "$norm" ]]; then
