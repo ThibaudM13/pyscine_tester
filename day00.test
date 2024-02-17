@@ -35,21 +35,10 @@ def ft_warn(received: str, expected: str = None):
         warnings.warn(y + warn_msg + r)
 
 
-def file_exists_decorator(dir_path):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            if os.path.isdir('./' + dir_path):
-                return func(*args, **kwargs)
-            else:
-                pytest.skip()
-        return wrapper
-    return decorator
-
-
 # -------------------
 # -----   EX00  -----
 # -------------------
-@file_exists_decorator('ex00')
+@pytest.mark.skipif(not os.path.isdir('./ex00'), reason='ex00 not done.')
 def utils_unit_ex00(isSuccess: bool, expected='') -> bool:
     av = ["python3", "ex00/Hello.py"]
     process = sp.run(av, capture_output=True)
@@ -59,7 +48,7 @@ def utils_unit_ex00(isSuccess: bool, expected='') -> bool:
     assert out == expected
 
 
-@file_exists_decorator('ex00')
+@pytest.mark.skipif(not os.path.isdir('./ex00'), reason='ex00 not done.')
 def test_ex00():
     utils_unit_ex00(True, "['Hello', 'World!']\n"
                           "('Hello', 'France!')\n"
@@ -84,7 +73,7 @@ ft_tests = {
 }
 
 
-@file_exists_decorator('ex02')
+@pytest.mark.skipif(not os.path.isdir('./ex02'), reason='ex02 not done.')
 @pytest.mark.parametrize("o, expected",
                          ft_tests.values(),
                          ids=ft_tests.keys())
@@ -114,7 +103,7 @@ ft_tests = {
 }
 
 
-@file_exists_decorator('ex03')
+@pytest.mark.skipif(not os.path.isdir('./ex03'), reason='ex03 not done.')
 @pytest.mark.parametrize("o, expected, isNull",
                          ft_tests.values(),
                          ids=ft_tests.keys())
@@ -138,7 +127,7 @@ ft_tests_ok = {
 }
 
 
-@file_exists_decorator('ex04')
+@pytest.mark.skipif(not os.path.isdir('./ex04'), reason='ex04 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
@@ -164,7 +153,7 @@ ft_tests_error = {
 }
 
 
-@file_exists_decorator('ex04')
+@pytest.mark.skipif(not os.path.isdir('./ex04'), reason='ex04 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
@@ -184,14 +173,14 @@ def test_ex04_error(capsys, av: List[str], expected) -> bool:
 # -------------------
 # -----   EX05  -----
 # -------------------
-@file_exists_decorator('ex05')
+@pytest.mark.skipif(not os.path.isdir('./ex05'), reason='ex05 not done.')
 def test_ex05_doc():
     import ex05 as exo5
 
     doctrings([exo5])
 
 
-@file_exists_decorator('ex05')
+@pytest.mark.skipif(not os.path.isdir('./ex05'), reason='ex05 not done.')
 def get_str(arr_vals: List[int]) -> str:
     s = f"The text contains {arr_vals[0]} characters:\n"
     s += f"{arr_vals[1]} upper letters\n"
@@ -216,7 +205,7 @@ ft_tests_ok = {
 }
 
 
-@file_exists_decorator('ex05')
+@pytest.mark.skipif(not os.path.isdir('./ex05'), reason='ex05 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
@@ -236,7 +225,7 @@ ft_tests_error = {
 }
 
 
-@file_exists_decorator('ex05')
+@pytest.mark.skipif(not os.path.isdir('./ex05'), reason='ex05 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
@@ -255,7 +244,7 @@ def test_ex05_error(capsys, av: List[str], expected) -> bool:
 # -------------------
 # -----   EX06  -----
 # -------------------
-@file_exists_decorator('ex06')
+@pytest.mark.skipif(not os.path.isdir('./ex06'), reason='ex06 not done.')
 def test_ex06_doc():
     import ex06.filterstring as exo6A
     import ex06.ft_filter as exo6B
@@ -275,7 +264,7 @@ ft_tests_filter_ok = {
 }
 
 
-@file_exists_decorator('ex06')
+@pytest.mark.skipif(not os.path.isdir('./ex06'), reason='ex06 not done.')
 @pytest.mark.parametrize("func, seq",
                          ft_tests_filter_ok.values(),
                          ids=ft_tests_filter_ok.keys())
@@ -285,7 +274,7 @@ def test_ex06_filter(func, seq):
     assert list(filter(func, seq)) == list(ft_filter(func, seq))
 
 
-@file_exists_decorator('ex06')
+@pytest.mark.skipif(not os.path.isdir('./ex06'), reason='ex06 not done.')
 def test_ex06_filter_doc():
     from ex06.ft_filter import ft_filter
 
@@ -305,7 +294,7 @@ ft_tests_ok = {
 }
 
 
-@file_exists_decorator('ex06')
+@pytest.mark.skipif(not os.path.isdir('./ex06'), reason='ex06 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
@@ -328,7 +317,7 @@ ft_tests_error = {
 }
 
 
-@file_exists_decorator('ex06')
+@pytest.mark.skipif(not os.path.isdir('./ex06'), reason='ex06 not done.')
 @pytest.mark.parametrize("av",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
@@ -349,7 +338,7 @@ def test_ex06_error(capsys, av) -> bool:
 # -----   EX07  -----
 # -------------------
 
-@file_exists_decorator('ex07')
+@pytest.mark.skipif(not os.path.isdir('./ex07'), reason='ex07 not done.')
 def test_ex07_doc():
     import ex07.sos as exo7
 
@@ -369,7 +358,7 @@ ft_tests_ok = {
 }
 
 
-@file_exists_decorator('ex07')
+@pytest.mark.skipif(not os.path.isdir('./ex07'), reason='ex07 not done.')
 @pytest.mark.parametrize("av, expected",
                          ft_tests_ok.values(),
                          ids=ft_tests_ok.keys())
@@ -392,7 +381,7 @@ ft_tests_error = {
 }
 
 
-@file_exists_decorator('ex07')
+@pytest.mark.skipif(not os.path.isdir('./ex07'), reason='ex07 not done.')
 @pytest.mark.parametrize("av",
                          ft_tests_error.values(),
                          ids=ft_tests_error.keys())
@@ -413,7 +402,7 @@ def test_ex07_error(capsys, av) -> bool:
 # -----   EX08  -----
 # -------------------
 
-@file_exists_decorator('ex08')
+@pytest.mark.skipif(not os.path.isdir('./ex08'), reason='ex08 not done.')
 def test_ex08_doc():
     import ex08.Loading as exo8
 
