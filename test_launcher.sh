@@ -20,7 +20,7 @@ main() {
 		esac
 	done
 
-	check_dependencies
+	check_prelaunch
 
 	days[00]=Starting
 	days[01]=Array
@@ -48,15 +48,21 @@ main() {
 
 # Print error message and disable caching.
 error() {
-	printf "\033[91;1m$1\033[m\n"
+	printf "\033[91;1m[Error]\033[m\033[91m $1\033[m\n"
 	OPT_CACHE=0
-	delete_files
+	
+	if [ $# -gt 1 ] && [ $2 == '--quit' ]; then
+		exit 1
+	else
+		delete_files
+	fi
 }
 
 # Check dependencies: Python3 and venv.
-check_dependencies() {
-    python3 --version &>/dev/null || error "Python3 is not installed."
-    python3 -c "import venv" &>/dev/null || error "python package venv is not installed."
+check_prelaunch() {
+    python3 --version &>/dev/null || error "Python3 is not installed." --quit
+    python3 -c "import venv" &>/dev/null || error "python package venv is not installed." --quit
+	[ -d "./ex00" ] || error "You must launch tester at root of a piscine day." --quit
 }
 
 # Initialize chosen day variable
