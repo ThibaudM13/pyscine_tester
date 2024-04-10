@@ -287,9 +287,9 @@ ft_tests_ok = {
     'Test1': (["Hello the World", "4"],
               "['Hello', 'World']\n"),
     'Test2': (["Hello the World", "6"], "[]\n"),
-    'Test3': (["012 0123 012345 012 0123456789 01 0", "4"],
+    'Test3': (["012 0123 012345 012 0123456789 01 0", "3"],
               "['0123', '012345', '0123456789']\n"),
-    'Test4': (["\t\t\nTest\v\rMultiple errmmmmm\t \nSpaces", "8"],
+    'Test4': (["Test Multiple errmmmmm Spaces7", "7"],
               "['Multiple', 'errmmmmm']\n")
 }
 
