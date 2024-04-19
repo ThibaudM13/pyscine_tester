@@ -9,11 +9,12 @@ For a one-time use, such as in a correction scenario, run the following command:
 
 ```bash
 bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)" _ [options]
-
-options:
-	--allow-cache | -c		: Cache the tester file and dependency to run test faster
-	--day[n] | [n]			: launch a specifi day with [n] the day number
 ```
+
+##### Options
+ - `--allow-cache` | `-c`		: Cache the tester file and dependencies to run test faster
+ - `--day[n]` | `[n]`			: launch a **specific** day with `[n]` the day number
+
 
 #### Cleanup
 To remove all files associated with the tester, simply run the program again:
