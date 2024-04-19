@@ -14,19 +14,25 @@ main() {
 			-f|--force)
 				OPT_FORCE=1
 				continue;;
+			\-\-day[0-1])
+				chosen_day=`grep -oE '[0-9]+' <<< "$arg"`
+				continue;;
+			[0-1])
+				chosen_day=`grep -oE '[0-9]+' <<< "$arg"`
+				continue;;
 			*)
 				error "$arg: Unknown param..."
 				exit 1;;
 		esac
 	done
 
-	check_prelaunch
 
 	days[00]=Starting
 	days[01]=Array
 
 	days_available="${!days[@]}"
 
+	check_prelaunch
 	trap delete_files INT
 	get_user_choice
 	load_files
@@ -49,13 +55,14 @@ main() {
 # Print error message and disable caching.
 error() {
 	printf "\033[91;1m[Error]\033[m\033[91m $1\033[m\n"
-	OPT_CACHE=0
+
 	
 	if [ $# -gt 1 ] && [ $2 == '--quit' ]; then
 		exit 1
-	else
+	elif ((OPT_CACHE == 0)); then
 		delete_files
 	fi
+	OPT_CACHE=0
 }
 
 # Check dependencies: Python3 and venv.
@@ -63,13 +70,8 @@ check_prelaunch() {
     python3 --version &>/dev/null || error "Python3 is not installed." --quit
     python3 -c "import venv" &>/dev/null || error "python package venv is not installed." --quit
 	[ -d "./ex00" ] || error "You must launch tester at root of a piscine day." --quit
-}
+	[ -d "./PYscine_tester" ] && ((chosen_day == -1)) && chosen_day=`ls PYscine_tester | grep -o '[0-9]' | head -n1`
 
-# Initialize chosen day variable
-chosen_day=0
-
-# Function to prompt user for a day selection
-get_user_choice() {
 	printf "\033[H\033[2J"
 	printf "\033[1;92m
   ┌──────────────────────────────────────────────────────────────┐
@@ -78,6 +80,14 @@ get_user_choice() {
   │  ╩   ┴  ┴ ┴ ┴└─┘┘└┘  ╩  ┴└─┘└─┘┴ ┘└┘└─┘   ╩ └─┘└─┘ ┴ └─┘┴└─  │
   └──────────────────────────────────────────────────────────────┘
 \n\033[m"
+}
+
+# Initialize chosen day variable
+chosen_day=-1
+
+# Function to prompt user for a day selection
+get_user_choice() {
+	[[ $chosen_day -gt -1 ]] && return
 
     # List available days
 	printf "\033[1m Days available are:\033[m\n"
@@ -86,7 +96,7 @@ get_user_choice() {
 	done | sort
 
 	printf "\n"
-
+	
     # Prompt user for day selection
     while true; do
         printf '\r\033[2K'
