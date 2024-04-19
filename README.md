@@ -8,7 +8,11 @@
 For a one-time use, such as in a correction scenario, run the following command:
 
 ```bash
-bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)"
+bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)" _ [options]
+
+options:
+	--allow-cache | -c		: Cache the tester file and dependency to run test faster
+	--day[n] | [n]			: launch a specifi day with [n] the day number
 ```
 
 #### Multiple Uses
