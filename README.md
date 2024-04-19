@@ -4,7 +4,7 @@
 
 ### Quick Start
 
-#### Single Use
+#### Use
 For a one-time use, such as in a correction scenario, run the following command:
 
 ```bash
@@ -13,13 +13,6 @@ bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)" _ [options]
 options:
 	--allow-cache | -c		: Cache the tester file and dependency to run test faster
 	--day[n] | [n]			: launch a specifi day with [n] the day number
-```
-
-#### Multiple Uses
-For repeated use without deleting newly created or downloaded files, execute the following command:
-
-```bash
-bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)" _ --allow-cache
 ```
 
 #### Cleanup
@@ -32,7 +25,7 @@ bash -c "$(curl -Ls http://tinyurl.com/FtPythonPoolTester)"
 Alternatively, you can manually delete the files with the following command:
 
 ```bash
-rm -rf PYscine_tester ./conftest.py
+rm -rf PYscine_tester .pytest_cache
 ```
 
 ### Security Notice

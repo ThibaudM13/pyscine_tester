@@ -199,7 +199,7 @@ delete_files() {
 		loading "$!" "Cleaning directory."
 
 		# Synchronously remove the PYscine_tester directory and tester_launcher.sh
-		exec rm -rf ./PYscine_tester ./tester_launcher.sh 2>&1 >/dev/null
+		exec rm -rf ./PYscine_tester ./tester_launcher.sh ./.pytest_cache 2>&1 >/dev/null
 	else
         # If caching is allowed, simply exit without cleanup
 		exit 0
