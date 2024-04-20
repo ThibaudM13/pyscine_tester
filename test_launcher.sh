@@ -14,10 +14,10 @@ main() {
 			-f|--force)
 				OPT_FORCE=1
 				continue;;
-			\-\-day[0-1])
+			\-\-day[0-3])
 				chosen_day=`grep -oE '[0-9]+' <<< "$arg"`
 				continue;;
-			[0-1])
+			[0-3])
 				chosen_day=`grep -oE '[0-9]+' <<< "$arg"`
 				continue;;
 			*)
@@ -29,6 +29,8 @@ main() {
 
 	days[00]=Starting
 	days[01]=Array
+	days[02]=DataTable
+	days[03]=POO
 
 	days_available="${!days[@]}"
 

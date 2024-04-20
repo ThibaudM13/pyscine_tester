@@ -1,0 +1,96 @@
+from ex00.S1E9 import Character, Stark
+import ex00.S1E9 as exo0
+import inspect
+import pytest
+import sys
+import warnings
+
+
+# ---- UTILS ----
+def docstrings(obj, firstCall: bool = True):
+    if firstCall and inspect.isclass(obj):
+        assert obj.__doc__ is not None, "Missing docstring"\
+            f" for class {obj.__name__}"
+        docstrings(obj, False)
+    for name, member in inspect.getmembers(obj):
+        if inspect.ismethod(member) or inspect.isfunction(member):
+            is_required = not name.startswith('__') or name == '__init__'
+            if is_required:
+                assert member.__doc__ is not None, "Missing docstring"\
+                    f" for {obj.__name__}.{name}"
+
+
+def getStrError(e: Exception) -> str:
+    """
+    Method to get the error output required by the subject.
+    """
+    return f"{type(e).__name__}: {str(e)}"
+
+
+def ft_warn(received: str, msg: str = None):
+    b = '\033[1m'
+    y = '\033[33m'
+    r = '\033[m'
+    warn_msg = ""
+    warn_msg = f"\n{b}Not Same output as expected\n"\
+               f"{r}{y}Received:{r}\n"\
+               f"\t{received}\n"\
+               f"{y}{msg}\n"
+    if warn_msg:
+        warnings.warn(y + warn_msg + r)
+
+
+# -------------------
+# -----   EX00  -----
+# -------------------
+def test_doc_ex00():
+    docstrings(Character)
+    docstrings(Stark)
+
+
+no = Stark('NightOwl')
+tests_bmi = {
+    'abstract die method': (Character.__dict__['die'].__isabstractmethod__,
+                            True),
+    'creation method': ("{'first_name': 'NightOwl', 'is_alive': True}",
+                        str(no.__dict__)),
+    'die method': ({'first_name': 'NightOwl', 'is_alive': False},
+                   no.__dict__)
+}
+no.die()
+
+
+@pytest.mark.parametrize("value, expected",
+                         tests_bmi.values(),
+                         ids=tests_bmi.keys())
+def test_ok_bmi_ex00(value: any, expected: any) -> bool:
+    assert value == expected
+
+# 
+# tests_apply = {
+    # 'random': (True, ([random.uniform(0.0, 40.0) for _ in range(10)], 30)),
+    # 'empty': (True, ([], 4242)),
+    # 'max_lim': (True, ([43, 2, 4, 39, 9, 3243], 424242)),
+    # 'Float limit': (False, ([random.uniform(0.0, 40.0) for _ in range(10)],
+                            # 30.0)),
+    # 'Str in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30)),
+    # 'Diff types in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30.0)),
+    # 'Dict param': (False, ({32: 43, 09.4: 'Falafel'}, 30.0))
+# }
+# 
+# @pytest.mark.parametrize("isSuccess, params",
+                         # tests_apply.values(),
+                         # ids=tests_apply.keys())
+# def test_apply_ex00(isSuccess: bool, params: tuple) -> bool:
+    # bmi_list, limit = params
+    # try:
+        # ret = apply_limit(bmi_list, limit)
+        # expected = [elem >= limit for elem in bmi_list]
+        # if not isSuccess and ret != expected:
+            # ft_warn(str(ret), "An error occured list, must be empty")
+        # else:
+            # assert ret == expected
+# 
+    # except Exception:
+        # assert not isSuccess, 'Exception catched with correct params.'
+        # print(getStrError(e), file=sys.stderr)
