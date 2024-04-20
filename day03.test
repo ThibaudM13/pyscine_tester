@@ -1,5 +1,3 @@
-from ex00.S1E9 import Character, Stark
-import ex00.S1E9 as exo0
 import inspect
 import pytest
 import sys
@@ -43,15 +41,37 @@ def ft_warn(received: str, msg: str = None):
 # -------------------
 # -----   EX00  -----
 # -------------------
+from ex00.S1E9 import Character, Stark
+
+
 def test_doc_ex00():
     docstrings(Character)
     docstrings(Stark)
 
 
-no = Stark('NightOwl')
-tests_bmi = {
-    'abstract die method': (Character.__dict__['die'].__isabstractmethod__,
+def check_die(Class):
+    dic = Class.__dict__
+    if 'die' in dic.keys():
+        dic = dic['die'].__dict__.keys()
+        if '__isabstractmethod__' in dic:
+            return True
+
+
+tests_character = {
+    'abstract die method': (check_die(Character),
                             True),
+}
+
+
+@pytest.mark.parametrize("value, expected",
+                         tests_character.values(),
+                         ids=tests_character.keys())
+def test_ex00_Character(value: any, expected: any) -> bool:
+    assert value == expected
+
+
+no = Stark('NightOwl')
+tests_stark = {
     'creation method': ("{'first_name': 'NightOwl', 'is_alive': True}",
                         str(no.__dict__)),
     'die method': ({'first_name': 'NightOwl', 'is_alive': False},
@@ -59,38 +79,132 @@ tests_bmi = {
 }
 no.die()
 
-
 @pytest.mark.parametrize("value, expected",
-                         tests_bmi.values(),
-                         ids=tests_bmi.keys())
-def test_ok_bmi_ex00(value: any, expected: any) -> bool:
+                         tests_stark.values(),
+                         ids=tests_stark.keys())
+def test_ex00_Stark(value: any, expected: any) -> bool:
     assert value == expected
 
-# 
-# tests_apply = {
-    # 'random': (True, ([random.uniform(0.0, 40.0) for _ in range(10)], 30)),
-    # 'empty': (True, ([], 4242)),
-    # 'max_lim': (True, ([43, 2, 4, 39, 9, 3243], 424242)),
-    # 'Float limit': (False, ([random.uniform(0.0, 40.0) for _ in range(10)],
-                            # 30.0)),
-    # 'Str in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30)),
-    # 'Diff types in list': (False, ([32, 43, 09.43, 'Falafel', 4], 30.0)),
-    # 'Dict param': (False, ({32: 43, 09.4: 'Falafel'}, 30.0))
-# }
-# 
-# @pytest.mark.parametrize("isSuccess, params",
-                         # tests_apply.values(),
-                         # ids=tests_apply.keys())
-# def test_apply_ex00(isSuccess: bool, params: tuple) -> bool:
-    # bmi_list, limit = params
-    # try:
-        # ret = apply_limit(bmi_list, limit)
-        # expected = [elem >= limit for elem in bmi_list]
-        # if not isSuccess and ret != expected:
-            # ft_warn(str(ret), "An error occured list, must be empty")
-        # else:
-            # assert ret == expected
-# 
-    # except Exception:
-        # assert not isSuccess, 'Exception catched with correct params.'
-        # print(getStrError(e), file=sys.stderr)
+
+# -------------------
+# -----   EX01  -----
+# -------------------
+from ex01.S1E7 import Baratheon, Lannister
+
+
+def test_doc_ex01():
+    docstrings(Lannister)
+    docstrings(Baratheon)
+
+
+tests_baratheon = {
+    'one_arg_init': (Baratheon('Babar').__dict__,
+                     {'first_name': 'Babar', 'is_alive': True,
+                      'family_name': 'Baratheon',
+                      'eyes': 'brown', 'hairs': 'dark'}),
+    'two_arg_init': (Baratheon('Barbare', False).__dict__,
+                     {'first_name': 'Barbare', 'is_alive': False,
+                      'family_name': 'Baratheon',
+                      'eyes': 'brown', 'hairs': 'dark'}),
+    'repr_method': (Baratheon('Barbara').__repr__(),
+                    "Vector:('Baratheon','brown','dark')"),
+    'str_method': (Baratheon('Barbara').__str__(),
+                   "Vector:('Baratheon','brown','dark')"),
+}
+
+
+@pytest.mark.parametrize("value, expected",
+                         tests_baratheon.values(),
+                         ids=tests_baratheon.keys())
+def test_ex01_Baratheon(value: any, expected: any) -> bool:
+    if isinstance(expected, str):
+        value = "".join(value.split())
+    assert value == expected
+
+
+tests_lannister = {
+    'one_arg_init': (Lannister('Lanny').__dict__,
+                     {'first_name': 'Lanny', 'is_alive': True,
+                      'family_name': 'Lannister',
+                      'eyes': 'blue', 'hairs': 'light'}),
+    'two_arg_init': (Lannister('Lannelaure', False).__dict__,
+                     {'first_name': 'Lannelaure', 'is_alive': False,
+                      'family_name': 'Lannister',
+                      'eyes': 'blue', 'hairs': 'light'}),
+    'repr_method': (Lannister('Lanna').__repr__(),
+                    "Vector:('Lannister','blue','light')"),
+    'str_method': (Lannister('Lanna').__str__(),
+                   "Vector:('Lannister','blue','light')"),
+    'check create decorator': (type(Lannister.__dict__['create_lannister']),
+                               classmethod)
+}
+
+
+@pytest.mark.parametrize("value, expected",
+                         tests_lannister.values(),
+                         ids=tests_lannister.keys())
+def test_ex01_Lannister(value: any, expected: any) -> bool:
+    if isinstance(expected, str):
+        value = "".join(value.split())
+    assert value == expected
+
+
+# -------------------
+# -----   EX02  -----
+# -------------------
+from ex02.DiamondTrap import King
+
+
+def test_doc_ex02():
+    docstrings(King)
+
+
+bases = [b.__name__ for b in King.__bases__]
+tests_king = {
+    'Baratheon inherit': ('Baratheon' in bases,
+                          True),
+    'Lannister inherit': ('Lannister' in bases,
+                          True),
+}
+
+king1 = King("Charles")
+tests_king['one arg init'] = (king1.__dict__,
+                              {'first_name': 'Charles',
+                               'is_alive': True,
+                               'family_name': 'Baratheon',
+                               'eyes': 'brown', 'hairs': 'dark'})
+
+king2 = King("Henri IV", False)
+tests_king['two arg init'] = (king2.__dict__,
+                              {'first_name': 'Henri IV',
+                               'is_alive': False,
+                               'family_name': 'Baratheon',
+                               'eyes': 'brown', 'hairs': 'dark'})
+king3 = King('Sunrise')
+king4 = King('Happy')
+king3.set_eyes('orange')
+tests_king['eyes setter'] = (king3.eyes, 'orange')
+king4.eyes = 'red'
+tests_king['eyes getter'] = (king4.get_eyes(), 'red')
+
+king3.set_hairs('void')
+tests_king['hairs setter'] = (king3.hairs, 'void')
+king4.hairs = 'raimbow'
+tests_king['hairs getter'] = (king4.get_hairs(), 'raimbow')
+
+@pytest.mark.parametrize("value, expected",
+                         tests_king.values(),
+                         ids=tests_king.keys())
+def test_ex02_King(value, expected):
+    assert value == expected
+
+
+# -------------------
+# -----   EX02  -----
+# -------------------
+from ex03.ft_calculator import calculator
+
+
+def test_doc_ex03():
+    docstrings(calculator)
+
