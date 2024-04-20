@@ -200,11 +200,21 @@ def test_ex02_King(value, expected):
 
 
 # -------------------
-# -----   EX02  -----
+# -----   EX03  -----
 # -------------------
 from ex03.ft_calculator import calculator
 
 
 def test_doc_ex03():
     docstrings(calculator)
+
+
+# -------------------
+# -----   EX04  -----
+# -------------------
+from ex04.ft_calculator import calculator as ccalculator
+
+
+def test_doc_ex04():
+    docstrings(ccalculator)
 
