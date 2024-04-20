@@ -102,8 +102,8 @@ get_user_choice() {
     # Prompt user for day selection
     while true; do
         printf '\r\033[2K'
-        read -n  1 -p 'Enter the wished day [0-1] ' choice
-        if ! [[ -n $choice ]] || ! [[ $choice =~ [0-9] ]] || ! (( choice <=  1 && choice >=  0 )); then
+        read -n  1 -p 'Enter the wished day [0-3] ' choice
+        if ! [[ -n $choice ]] || ! [[ $choice =~ [0-9] ]] || ! (( choice <=  3 && choice >=  0 )); then
             sleep  0.3
             continue
 		else
